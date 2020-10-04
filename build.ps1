@@ -21,23 +21,23 @@ Write-Host "Building all projects (Build.csproj traversal)..." -ForegroundColor 
 dotnet build ".\Build.csproj" -c Release /p:CI=true
 Write-Host "Done building." -ForegroundColor "Green"
 
-if ($RunTests) {
-    Write-Host "Running tests: Build.csproj traversal (all frameworks)" -ForegroundColor "Magenta"
-    dotnet test ".\Build.csproj" -c Release --no-build
-    if ($LastExitCode -ne 0) {
-        Write-Host "Error with tests, aborting build." -Foreground "Red"
-        Exit 1
-    }
-    Write-Host "Tests passed!" -ForegroundColor "Green"
-}
+# if ($RunTests) {
+#     Write-Host "Running tests: Build.csproj traversal (all frameworks)" -ForegroundColor "Magenta"
+#     dotnet test ".\Build.csproj" -c Release --no-build
+#     if ($LastExitCode -ne 0) {
+#         Write-Host "Error with tests, aborting build." -Foreground "Red"
+#         Exit 1
+#     }
+#     Write-Host "Tests passed!" -ForegroundColor "Green"
+# }
 
-if ($CreatePackages) {
-    New-Item -ItemType Directory -Path $packageOutputFolder -Force | Out-Null
-    Write-Host "Clearing existing $packageOutputFolder..." -NoNewline
-    Get-ChildItem $packageOutputFolder | Remove-Item
-    Write-Host "done." -ForegroundColor "Green"
+# if ($CreatePackages) {
+#     New-Item -ItemType Directory -Path $packageOutputFolder -Force | Out-Null
+#     Write-Host "Clearing existing $packageOutputFolder..." -NoNewline
+#     Get-ChildItem $packageOutputFolder | Remove-Item
+#     Write-Host "done." -ForegroundColor "Green"
 
-    Write-Host "Building all packages" -ForegroundColor "Green"
-    dotnet pack ".\Build.csproj" --no-build -c Release /p:PackageOutputPath=$packageOutputFolder /p:CI=true
-}
+#     Write-Host "Building all packages" -ForegroundColor "Green"
+#     dotnet pack ".\Build.csproj" --no-build -c Release /p:PackageOutputPath=$packageOutputFolder /p:CI=true
+# }
 Write-Host "Build Complete." -ForegroundColor "Green"
