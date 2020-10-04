@@ -32,6 +32,21 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Add GUID
+        shell: powershell
+        run: |
+            $paths = Get-ChildItem -include *.csproj -Recurse
+            foreach($pathobject in $paths) 
+            {
+                $path = $pathobject.fullname
+                $doc = New-Object System.Xml.XmlDocument
+                $doc.Load($path)
+                $child = $doc.CreateElement("ProjectGuid")
+                $child.InnerText = [guid]::NewGuid().ToString().ToUpper()
+                $node = $doc.SelectSingleNode("//Project/PropertyGroup")
+                $node.AppendChild($child)
+                $doc.Save($path)
+            }
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -39,7 +54,7 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"marodev_Dapper" /o:"marodev-github" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          # .\build.ps1
-          dotnet restore
-          dotnet build -c Release /p:CI=true
+          .\build.ps1
+          # dotnet restore
+          # dotnet build -c Release /p:CI=true
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
