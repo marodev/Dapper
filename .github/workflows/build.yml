@@ -35,18 +35,7 @@ jobs:
       - name: Add GUID
         shell: powershell
         run: |
-            $paths = Get-ChildItem -include *.csproj -Recurse
-            foreach($pathobject in $paths) 
-            {
-                $path = $pathobject.fullname
-                $doc = New-Object System.Xml.XmlDocument
-                $doc.Load($path)
-                $child = $doc.CreateElement("ProjectGuid")
-                $child.InnerText = [guid]::NewGuid().ToString().ToUpper()
-                $node = $doc.SelectSingleNode("//Project/PropertyGroup")
-                $node.AppendChild($child)
-                $doc.Save($path)
-            }
+          .\guid.ps1
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
