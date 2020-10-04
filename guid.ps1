@@ -13,5 +13,3 @@ foreach($pathobject in $paths)
         $doc.Save($path)
     }
 }
-workingDirectory: '$(Build.SourcesDirectory)'
-displayName: 'Add Project GUIDs'
