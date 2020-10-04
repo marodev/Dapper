@@ -1,4 +1,3 @@
-
 $paths = Get-ChildItem -include *.csproj -Recurse
 foreach($pathobject in $paths) 
 {
@@ -8,6 +7,11 @@ foreach($pathobject in $paths)
     $child = $doc.CreateElement("ProjectGuid")
     $child.InnerText = [guid]::NewGuid().ToString().ToUpper()
     $node = $doc.SelectSingleNode("//Project/PropertyGroup")
-    $node.AppendChild($child)
-    $doc.Save($path)
+    if ($node)
+    {
+        $node.AppendChild($child)
+        $doc.Save($path)
+    }
 }
+workingDirectory: '$(Build.SourcesDirectory)'
+displayName: 'Add Project GUIDs'
